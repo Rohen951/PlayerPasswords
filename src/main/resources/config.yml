@@ -6,13 +6,13 @@
 #    |_|    |_|\__,_|\__, |\___|_|  |_|   \__,_|___/___/ \_/\_/ \___/|_|  \__,_|___/
 #                     __/ |
 #                    |___/
-#                                Version 1.3
+#                                Version 1.4
 
 
 # This is used when an update modifies the config. If checks this value and
-#warns you when the config file does not match the version needed. This number
+# warns you when the config file does not match the version needed. This number
 # may be changed when the correct additions to the config are made.
-ConfigVersion: 2
+ConfigVersion: 3
 
 
 
@@ -44,9 +44,32 @@ Optional: true
 MinimumPasswordLength: 1
 MaximumPasswordLength: 256
 
+# Password encrypt method = AES,simpleHash,SHA256
+# Do not change this when users have already been registered on your server !
+EncryptMethod: "AES"
+
 # This sets what happens when the wrong password has been entered.
-# Options: kick, tryagain
+# Options: kick, tryagain, ban
 WrongPassword: "kick"
+
+# If banning due too wrong password, for how long in hours (minimum 1).
+WrongPasswordBanTime: 4
+
+# How many times can be entered wrong password in 'tryagain' option.
+WrongTries: 3
+
+# What happens if wrong password has been entered too many times in 'tryagain' option.
+# Options: kick, ban
+TooManyTries: "ban" 
+
+# If banning due too many password tries, for how long in hours (minimum 1).
+TooManyTriesBanTime: 24
+
+# If you want to use session for users, so they can log in without typing password after logout.
+IPSession: true
+
+# How many seconds after logout can user log in without typing password (maximum 300 seconds).
+SessionTimeOut: 60
 
 # Block chat when not logged in.
 BlockChat: true
@@ -63,34 +86,77 @@ BlockItemDrop: true
 # Block movement when not logged in.
 BlockMovement: true
 
+# If player need to type password two times while registering.
+# Can reduce users errors when entering passwords. 
+RegisterPasswordRetype: false
+
+# Show info messages in console.
+ConsoleVerbose: true
+
+# Show messages from section bellow or try to show message UnknowCommand if it is not false too. 
+ShowMsgUnknownCommand: true
+ShowMsgMustBeLoggedIn: true
+ShowMsgNoPermission: false 
+ShowMsgOptionalPasswordsDisabled: false
+
 # -----------------------------------------
 #               Messages
 # -----------------------------------------
 
 # Login
-Login: "&6&lLogin &8» &7You must log in to continue! &e/login [password]"
-Register: "&6&lRegister &8» &7You must register to continue! &e/register [password]"
+Login: "&fYou must log in to continue! Use &e/login [password]"
+Register: "&fYou must register to continue! Use &e/register [password]"
 LogInSuccessful: "&6&lLogin &8» &7You have logged in successfully."
-LoginUsage: "&6&lLogin &8» &c/login [password]"
+LoginUsage: "&6&lUsage &8» &f/login [password]"
+RegisterSuccessful: "&6&lRegister &8» &7You have been successfully registered."
 
 # Password
 PasswordEnabled: "&6&lPassword &8» &7You have &aenabled &7password protection."
 PasswordDisabled: "&6&lPassword &8» &7You have &cdisabled &7password protection."
 PasswordSet: "&6&lPassword &8» &7Your password has been set to &e%password%&7."
-SetPasswordSuccessful: "&6&lPassword &8» &7You have successfully set your password."
-RegisterUsage: "&6&lUsage &8» &7/register [password]"
+PasswordNeedSet: "&6&lPassword &8» &cYou need to set your password first."
+RegisterUsage: "&6&lUsage &8» &f/register [password]"
 PasswordIncorrect: "&6&lError &8» &cPassword Is Incorrect. Try again."
 PasswordSetUsage: "&6&lUsage &8» &7/password set [password]"
+RegisterRetypeUsage: "&6&lUsage &8» &f/register [password] [password]"
+RegisterRetype: "&fYou must register to continue!\n   Use &e/register [password] [password]"
 
 # Errors
 AlreadyLoggedIn: "&6&lError &8» &cYou are already logged in!"
 AlreadyRegistered: "&6&lError &8» &cYou are already registered!"
 NoPermission: "&6&lError &8» &cYou do not have permission to do that."
-OutOfBounds: "&6&lError &8» &cPassword must be between 1 and 256 characters long."
+OutOfBounds: "&6&lError &8» &cPassword must be between %minpass% and %maxpass% characters long."
 MustBeLoggedIn: "&6&lError &8» &cYou must be logged in to do that."
 OptionalPasswordsDisabled: "&6&lError &8» &cOptional Passwords are disabled."
+MustBeRegistered: "&6&lError &8» &cYou need to register first."
+NotIdentical: "&6&lError &8» &cEntered passwords are not identical."
 
 # Other
 KickMessage: "&cYou entered your password incorrectly."
 UpdateAvailable: "&6&lPlayerPasswords &8» &cYou are using an outdated version! Latest version is %version%."
-OutdatedConfig: "&6&lPlayerPasswords &8» &cThe config file is outdated. Features using this new file may error if not corrected."
+OutdatedConfig: "&6&lPlayerPasswords &8» &cThe config file is outdated. Features using this old file may error if not corrected."
+UnknownCommand: "&7Unknown command. Type &f/help&7 for help."
+KickMessageTooMuch: "&cYou have entered the wrong password too many times."
+BanMessage: "&cYou have been banned due to password guessing for %bantime% %hourtext%."
+HourText: "hour"
+HoursText: "hours"
+ReloadSuccessful: "&6&lPlayerPasswords &8» &aConfiguration reloaded."
+SessionsCleared: "&6&lPlayerPasswords &8» &aSessions list has been cleared."
+
+# Commands Texts
+PPinfo: "Shows plugin info."
+PPsupport: "Displays the support discord link."
+PPplayers: "Shows info of all players."
+PPversion: "Shows plugin version."
+PPverified: "&aVerified"
+PPbypassed: "&9Bypassed"
+PPnotRequired: "&bNot required"
+PPunverified: "&cUnverified"
+PPclearsessions: "Remove all players sessions."
+PPreload: "Reload configuration file."
+PPauthor: "Author"
+PPpluginVersion: "Plugin Version"
+PPconfigVersion: "Config Version"
+PassEnable: "Enables Your Password"
+PassDisable: "Disables Your Password"
+PassChange: "Changes Your Password"

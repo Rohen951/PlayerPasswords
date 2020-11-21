@@ -11,20 +11,34 @@ import java.net.URLConnection;
 
 public class UpdateChecker
 {
+    private UpdateChecker() {}
+    static UpdateChecker instance = new UpdateChecker();
+
+    /**
+     * This allows us to access an instance of this class.
+     */
+    public static UpdateChecker getInstance()
+    {
+        return instance;
+    }
+    
     private String currentVersion;
-    public static String latestVersion;
-    public static boolean update = false;
+    private String latestVersion;
+    private boolean verbose;
 
 
-    public UpdateChecker(String currentVersion)
+    public void UpdateCheck(String currentVersion)
     {
         this.currentVersion = currentVersion;
-        check.start();
+        if(verbose) Utils.chat(Bukkit.getConsoleSender(),"&6[&aPlayerPasswords&6] &7Checking update ...");
+        check();
     }
 
-    public boolean updateAvailble()
+    public boolean updateAvailable()
     {
-        if(!currentVersion.equals(latestVersion))
+        int lver = getInt(String.format("%1$-4s",latestVersion.replaceAll("[^0-9]","")).replace(" ", "0"));
+        int cver = getInt(String.format("%1$-4s",currentVersion.replaceAll("[^0-9]","")).replace(" ", "0"));
+        if (cver < lver)
         {
             return true;
         }
@@ -32,11 +46,8 @@ public class UpdateChecker
         return false;
     }
 
-    private Thread check = new Thread()
+    private void check()
     {
-        @Override
-        public void run()
-        {
             URL url = null;
             try
             {
@@ -61,20 +72,42 @@ public class UpdateChecker
             {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 latestVersion = reader.readLine();
-                if (!latestVersion.equals(currentVersion)) {
-                    update = true;
-                    Bukkit.getLogger().info("[PlayerPasswords] There is an update available.\nYour Version: " + currentVersion + "\nLatest Version: " + latestVersion);
+                int lver = getInt(String.format("%1$-4s",latestVersion.replaceAll("[^0-9]","")).replace(" ", "0"));
+                int cver = getInt(String.format("%1$-4s",currentVersion.replaceAll("[^0-9]","")).replace(" ", "0"));
+                if (cver < lver) {
+                    if(verbose) Utils.chat(Bukkit.getConsoleSender(),"&6[&aPlayerPasswords&6] &7There is an update available. Your Version: " + currentVersion + ", Latest Version: " + latestVersion);
                 }
                 else
                 {
-                    update = false;
+                    if(verbose) Utils.chat(Bukkit.getConsoleSender(),"&6[&aPlayerPasswords&6] &7No update found");
                 }
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
-        }
-    };
+    }
 
+    public void setVerbose(boolean verbose)
+    {
+        this.verbose = verbose;
+    }
+
+    public String getLatestVersion()
+    {
+        return latestVersion;
+    }
+
+    private int getInt(String s)
+    {
+        try
+        {
+            return Integer.parseInt(s);
+        }
+        catch (NumberFormatException e)
+        {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

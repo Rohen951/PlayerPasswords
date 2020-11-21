@@ -1,5 +1,5 @@
 name: PlayerPasswords
-version: 1.4
+version: 1.1
 author: firewolf8385
 main: org.firewolf8385.playerpasswords.PlayerPasswords
 commands:
@@ -12,6 +12,7 @@ commands:
   playerpasswords:
     usage: /<command>
     description: Main plugin command.
+    permission: playerpasswords.admin 
     aliases: [playerpassword, pp]
   password:
     usage: /<command>
@@ -24,6 +25,8 @@ permissions:
       playerpasswords.enable: true
       playerpasswords.disable: true
       playerpasswords.set: true
+  playerpasswords.admin:
+    default: op
   playerpasswords.bypass:
     default: false
   playerpasswords.required:

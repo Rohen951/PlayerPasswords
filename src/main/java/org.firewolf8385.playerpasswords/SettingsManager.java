@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
+import org.bukkit.Bukkit;
 
 public class SettingsManager
 {
@@ -21,11 +22,14 @@ public class SettingsManager
     }
 
     Plugin pl;
-    FileConfiguration config;
-    File configFile;
+    private FileConfiguration config;
+    private File configFile;
 
-    FileConfiguration data;
-    File dataFile;
+    private FileConfiguration data;
+    private File dataFile;
+
+    // Set current config version for plugin
+    private int currentConfigVersion = 3;
 
 
     /**
@@ -37,6 +41,23 @@ public class SettingsManager
         config = pl.getConfig();
         config.options().copyDefaults(true);
         configFile = new File(pl.getDataFolder(), "config.yml");
+
+        if(config.getInt("ConfigVersion") != currentConfigVersion)
+        {
+            // If version of config.yml is outdated then rename it a save default
+            File curConfigFile = new File(pl.getDataFolder(),"config.yml");
+            File renConfigFile = new File(pl.getDataFolder(),"config.yml.old");
+            curConfigFile.renameTo(renConfigFile);
+            if(config.getBoolean("ConsoleVerbose")) Utils.chat(Bukkit.getConsoleSender(),"&6[&aPlayerPasswords&6] &cFile config.yml outdated, saving default to plugin directory");
+        }
+        else if(!configFile.exists())
+        {
+            if(config.getBoolean("ConsoleVerbose")) Utils.chat(Bukkit.getConsoleSender(),"&6[&aPlayerPasswords&6] &7File config.yml created");
+        }
+        else
+        {
+            if(config.getBoolean("ConsoleVerbose")) Utils.chat(Bukkit.getConsoleSender(),"&6[&aPlayerPasswords&6] &7File config.yml readed");
+        }
         pl.saveDefaultConfig();
 
         dataFile = new File(pl.getDataFolder(), "data.yml");
@@ -47,11 +68,16 @@ public class SettingsManager
             try
             {
                 dataFile.createNewFile();
+                if(config.getBoolean("ConsoleVerbose")) Utils.chat(Bukkit.getConsoleSender(),"&6[&aPlayerPasswords&6] &7File data.yml created");
             }
             catch(IOException e)
             {
                 e.printStackTrace();
             }
+        }
+        else
+        {
+            if(config.getBoolean("ConsoleVerbose")) Utils.chat(Bukkit.getConsoleSender(),"&6[&aPlayerPasswords&6] &7File data.yml readed");
         }
     }
 
@@ -117,5 +143,26 @@ public class SettingsManager
     public void reloadData()
     {
         data = YamlConfiguration.loadConfiguration(dataFile);
+
+        if(!dataFile.exists())
+        {
+            try
+            {
+                dataFile.createNewFile();
+            }
+            catch(IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean isConfigOutdated()
+    {
+        if(config.getInt("ConfigVersion") != currentConfigVersion)
+        {
+            return true;
+        }
+        return false;
     }
 }

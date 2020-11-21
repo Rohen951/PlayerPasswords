@@ -14,6 +14,7 @@ public class PasswordPlayer
     private boolean required;
     private boolean verified;
     private UUID uuid;
+    private int wrongTries;
 
     /**
      * Create a PasswordPlayer
@@ -28,7 +29,7 @@ public class PasswordPlayer
         boolean three = getPlayer().hasPermission("playerpasswords.required");
 
         required = one || two || three;
-
+        wrongTries = 0;
         verified = !required || getPlayer().hasPermission("playerpasswords.bypass");
 
         players.put(uuid, this);
@@ -77,5 +78,24 @@ public class PasswordPlayer
     public void setVerified(boolean verified)
     {
         this.verified = verified;
+    }
+
+    /**
+     * Increase the incorrect password counter.
+     */
+    public void increaseWrongCounter()
+    {
+        wrongTries = wrongTries + 1;
+    }
+
+    /**
+     * Get if the incorrect password counter is full.
+     * @param How many times can user enter wrong password - value from config.
+     * @return Whether or not it is too many times.
+     */
+    public boolean isTooManyTimes(int i)
+    {
+        if(wrongTries >= i) return true;
+        return false;
     }
 }
