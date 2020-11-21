@@ -1,5 +1,5 @@
 name: PlayerPasswords
-version: 1.1
+version: 1.4
 author: firewolf8385
 main: org.firewolf8385.playerpasswords.PlayerPasswords
 commands:
